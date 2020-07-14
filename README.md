@@ -1,1 +1,1 @@
-# book-store-nestjs
+# Book Store NestJS
