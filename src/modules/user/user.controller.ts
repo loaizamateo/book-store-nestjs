@@ -2,8 +2,10 @@ import { Controller, Get, Param, Post, Body, Patch, Delete, ParseIntPipe, UseGua
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../role/decorators/role.decorator';
+import { RoleGuard } from '../role/guards/role.guard';
 
-@UseGuards(AuthGuard())
+// @UseGuards(AuthGuard())
 @Controller('users')
 export class UserController {
     constructor(
@@ -11,12 +13,14 @@ export class UserController {
     ){}
 
     @Get(':id')
+    @Roles('ADMIN', 'AUTHOR')
+    @UseGuards(AuthGuard(), RoleGuard)
     async getUser(@Param('id', ParseIntPipe) id: number): Promise<User>{
         const user = await this._userService.get(id);
         return user;
     }
 
-    // @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard())
     @Get()
     async getUsers(): Promise<User[]>{
         const users = await this._userService.getAll();
